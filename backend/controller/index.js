@@ -4,9 +4,25 @@ const { Op } = require('sequelize');
 class Controller {
     static async getSales(req, res, next) {
         try {
-            // const {}
-            const data = await Sales.findAll();
-            res.status(200).json({ message: 'Permintaan sukses dan data berhasil ditemukan', data })
+            const { nama_barang } = req.query;
+            const page = parseInt(req.query.page) || 1;
+            const limit = 3;
+            const offset = (page - 1) * limit;
+            const total = await Sales.count();
+            const pages = Math.ceil(total/limit);
+
+            if (nama_barang) {
+                const data = await Sales.findAll({
+                    where: {
+                        nama_barang: { [Op.like]: `&${ nama_barang}%`},
+                        limit: limit, offset: offset
+                    }
+                });
+            res.status(200).json({ message: 'Permintaan sukses dan data berhasil ditemukan', data, page, pages: pages, offset })
+            }else {
+                const data = await Sales.findAll({limit: limit, offset: offset})
+                res.status(200).json({ message: 'Permintaan sukses dan data berhasil ditemukan', data, page, pages: pages, offset })
+            }
         } catch (error) {
             res.status(404).json({ message: 'Data yang diminta tidak ditemukan' });
         }
