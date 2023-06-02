@@ -4,23 +4,43 @@ const { Op } = require('sequelize');
 class Controller {
     static async getSales(req, res, next) {
         try {
-            const { nama_barang } = req.query;
+            const { nama_barang, a_z, z_a, tanggal_transaksi_terkini, tanggal_transaksi_terlama, jumlah_terjual_terbanyak, startDate, endDate } = req.query;
+            // const startDate = req.query.start;
+            // const endDate = req.query.end;
             const page = parseInt(req.query.page) || 1;
-            const limit = 5;
+            const limit = 10;
             const offset = (page - 1) * limit;
             const total = await Sales.count();
             const pages = Math.ceil(total / limit);
 
+            let option = { limit, offset }
+
             if (nama_barang) {
-                const data = await Sales.findAll({
-                    where: { nama_barang: { [Op.like]: `%${nama_barang}%` } },
-                    limit: limit, offset: offset
-                });
-                res.status(200).json({ message: 'Permintaan sukses dan data berhasil ditemukan', data, page, pages: pages, offset })
-            } else {
-                const data = await Sales.findAll({order:[['nama_barang', 'ASC']], limit: limit, offset: offset })
-                res.status(200).json({ message: 'Permintaan sukses dan data berhasil ditemukan', data, page, pages: pages, offset })
+                option = { ...option, where: { nama_barang: { [Op.like]: `%${nama_barang}%` } } }
+            } else if (a_z) {
+                option = { ...option, order: [['nama_barang', 'ASC']] }
+            } else if (z_a) {
+                option = { ...option, order: [['nama_barang', 'DESC']] }
+            } else if (tanggal_transaksi_terkini) {
+                option = { ...option, order: [['tanggal_transaksi', 'ASC']] }
+            } else if (tanggal_transaksi_terlama) {
+                option = { ...option, order: [['tanggal_transaksi', 'DESC']] }
+            } else if (jumlah_terjual_terbanyak) {
+                if (startDate && endDate) {
+                    option = { ...option, where: { tanggal_transaksi: { [Op.between]: [startDate, endDate] } }, order: [['jumlah_terjual', 'DESC']] }
+                } else if (startDate) {
+                    const hari_ini = new Date()
+                    option = { ...option, where: { tanggal_transaksi: { [Op.between]: [startDate, hari_ini] } }, order: [['jumlah_terjual', 'DESC']] }
+                } else if (endDate) {
+                    option = { ...option, where: { tanggal_transaksi: { [Op.lt]: endDate } }, order: [['jumlah_terjual', 'DESC']] }
+                } else {
+                    option = { ...option, order: [['jumlah_terjual', 'DESC']] }
+                }
             }
+
+            const data = await Sales.findAll(option)
+            res.status(200).json({ message: 'Permintaan sukses dan data berhasil ditemukan', data, pages: pages, offset })
+
         } catch (error) {
             res.status(404).json({ message: 'Data yang diminta tidak ditemukan' });
         }
