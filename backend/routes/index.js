@@ -12,4 +12,7 @@ router.post('/create', controller.create)
 /* Update. */
 router.patch('/update/:id', controller.update)
 
+/* Delete. */
+router.delete('/delete/:id', controller.delete)
+
 module.exports = router;
