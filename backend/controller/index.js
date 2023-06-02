@@ -18,7 +18,7 @@ class Controller {
                 });
                 res.status(200).json({ message: 'Permintaan sukses dan data berhasil ditemukan', data, page, pages: pages, offset })
             } else {
-                const data = await Sales.findAll({ limit: limit, offset: offset })
+                const data = await Sales.findAll({order:[['nama_barang', 'ASC']], limit: limit, offset: offset })
                 res.status(200).json({ message: 'Permintaan sukses dan data berhasil ditemukan', data, page, pages: pages, offset })
             }
         } catch (error) {
