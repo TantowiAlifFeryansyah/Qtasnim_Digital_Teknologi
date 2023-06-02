@@ -9,4 +9,7 @@ router.get('/', controller.getSales)
 /* Create. */
 router.post('/create', controller.create)
 
+/* Update. */
+router.patch('/update/:id', controller.update)
+
 module.exports = router;
