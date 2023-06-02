@@ -10,9 +10,9 @@ app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
-app.get('/', (_req, res) => {
-  res.send('API berhasil jalan')
-})
+// app.get('/', (_req, res) => {
+//   res.send('API berhasil jalan')
+// })
 
 app.use('/', router)
 
