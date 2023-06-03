@@ -59,49 +59,59 @@ export default class SaleForm extends Component {
                         </div>
                     </div>
 
-                    <div class="row mb-3">
-                        <label htmlFor="stok" className="col-sm-2 col-form-label">
-                            <strong>Stock</strong>
-                        </label>
-                        <div className="col-sm-10">
-                            <input type="number" className="form-control" name="stok" id="stok"
-                                value={this.state.stok} onChange={this.handleInputChange}
-                            />
+                    {this.props.submitLabel !== 'search' &&
+                        <div class="row mb-3">
+                            <label htmlFor="stok" className="col-sm-2 col-form-label">
+                                <strong>Stock</strong>
+                            </label>
+                            <div className="col-sm-10">
+                                <input type="number" className="form-control" name="stok" id="stok"
+                                    value={this.state.stok} onChange={this.handleInputChange}
+                                />
+                            </div>
                         </div>
-                    </div>
+                    }
 
-                    <div class="row mb-3">
-                        <label htmlFor="jumlah_terjual" className="col-sm-2 col-form-label">
-                            <strong>Quantity Sold</strong>
-                        </label>
-                        <div className="col-sm-10">
-                            <input type="number" className="form-control" name="jumlah_terjual" id="jumlah_terjual"
-                                value={this.state.jumlah_terjual} onChange={this.handleInputChange}
-                            />
-                        </div>
-                    </div>
+                    {this.props.submitLabel !== 'search' &&
 
-                    <div class="row mb-3">
-                        <label htmlFor="tanggal_transaksi" className="col-sm-2 col-form-label">
-                            <strong>Transaction Date</strong>
-                        </label>
-                        <div className="col-sm-2">
-                            <input type="date" className="form-control" name="tanggal_transaksi" id="tanggal_transaksi"
-                                value={this.state.tanggal_transaksi} onChange={this.handleInputChange}
-                            />
+                        <div class="row mb-3">
+                            <label htmlFor="jumlah_terjual" className="col-sm-2 col-form-label">
+                                <strong>Quantity Sold</strong>
+                            </label>
+                            <div className="col-sm-10">
+                                <input type="number" className="form-control" name="jumlah_terjual" id="jumlah_terjual"
+                                    value={this.state.jumlah_terjual} onChange={this.handleInputChange}
+                                />
+                            </div>
                         </div>
-                    </div>
+                    }
 
-                    <div class="row mb-3">
-                        <label htmlFor="jenis_barang" className="col-sm-2 col-form-label">
-                            <strong>Item Type</strong>
-                        </label>
-                        <div className="col-sm-10">
-                            <input type="teks" className="form-control" name="jenis_barang" id="jenis_barang"
-                                value={this.state.jenis_barang} onChange={this.handleInputChange}
-                            />
+                    {this.props.submitLabel !== 'search' &&
+                        <div class="row mb-3">
+                            <label htmlFor="tanggal_transaksi" className="col-sm-2 col-form-label">
+                                <strong>Transaction Date</strong>
+                            </label>
+                            <div className="col-sm-2">
+                                <input type="date" className="form-control" name="tanggal_transaksi" id="tanggal_transaksi"
+                                    value={this.state.tanggal_transaksi} onChange={this.handleInputChange}
+                                />
+                            </div>
                         </div>
-                    </div>
+                    }
+
+                    {this.props.submitLabel !== 'search' &&
+                        <div class="row mb-3">
+                            <label htmlFor="jenis_barang" className="col-sm-2 col-form-label">
+                                <strong>Item Type</strong>
+                            </label>
+                            <div className="col-sm-10">
+                                <input type="teks" className="form-control" name="jenis_barang" id="jenis_barang"
+                                    value={this.state.jenis_barang} onChange={this.handleInputChange}
+                                />
+                            </div>
+                        </div>
+                    }
+
 
                     <div className="col-auto">
                         <button type="submit" className="btn btn-success" >

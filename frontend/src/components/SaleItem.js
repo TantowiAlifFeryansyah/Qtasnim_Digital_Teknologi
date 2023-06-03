@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react"
 import { format } from 'date-fns';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrashCan, faPen } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFloppyDisk, faBan, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -123,7 +123,7 @@ export default class SaleItem extends Component {
                             />
                             :
                             format(new Date(this.state.tanggal_transaksi), 'MM/dd/yyyy')
-                            
+
                         }
                     </td>
 
@@ -149,22 +149,26 @@ export default class SaleItem extends Component {
                                 <button type="button"
                                     className="btn btn-primary"
                                     onClick={this.saveEdit}>
-                                    save
+                                    <FontAwesomeIcon icon={faFloppyDisk} />
                                 </button>
                                 &nbsp;
                                 <button type="button"
                                     className="btn btn-warning"
                                     onClick={this.handleCancel}>
-                                    cancel
+                                    <FontAwesomeIcon icon={faBan} />
                                 </button>
                             </td>
 
                             :
 
                             <td>
-                                <button type="button" className="btn btn-success" onClick={this.handleEdit}>edit</button>
+                                <button type="button" className="btn btn-success" onClick={this.handleEdit}>
+                                    <FontAwesomeIcon icon={faPenToSquare} />
+                                </button>
                                 &nbsp;
-                                <button type="button" className="btn btn-danger" onClick={() => this.handleModalShowHide()}>delete</button>
+                                <button type="button" className="btn btn-danger" onClick={() => this.handleModalShowHide()}>
+                                    <FontAwesomeIcon icon={faTrash} />
+                                </button>
                             </td>
                         :
                         <td>

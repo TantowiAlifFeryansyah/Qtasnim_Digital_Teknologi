@@ -2,6 +2,9 @@ import { Component } from "react";
 import SaleForm from "./SaleForm";
 import SaleList from "./SaleList";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCopyright } from '@fortawesome/free-solid-svg-icons';
+
 export default class SaleBox extends Component {
 
     constructor(props) {
@@ -209,61 +212,76 @@ export default class SaleBox extends Component {
         return (
             <div className="container-xxl mt-4">
                 <div className="card shadow mb-4">
-                    <div className="card-header pt-4 pb-3">
+                    <div className="card-header pt-2 pb-1">
                         <center>
-                            <h1>Penjualan</h1>
+                            <h1>Sales</h1>
                         </center>
                     </div>
-                </div>
-
-                {this.state.isAdd ?
-                    <div className="card shadow mb-4">
-                        <div className="card-header py-3">
-                            <h6 className="m-0 font-weight-bold">Adding Form</h6>
-                        </div>
-
-                        <div className="card-body">
-                            <SaleForm
-                                submit={this.addSale}
-                                cancel={this.handleCancel}
-                            />
-                        </div>
-                    </div>
-                    :
-                    <div className="mb-4">
-                        <button type="submit"
-                            className="btn btn-primary"
-                            onClick={this.handleAdd}>
-                            <i className="fa-solid fa-plus"></i>
-                            &nbsp;
-                            add
-                        </button>
-                    </div>
-                }
-
-                <div className="card shadow mb-5">
-                    <div className="card-header py-3">
-                        <h6 className="m-0 font-weight-bold">Search Form</h6>
-                    </div>
                     <div className="card-body">
-                        <SaleForm
-                            // submit={this.searchSale}
-                            submit={this.search}
-                            submitLabel='search' 
-                            cancelSearch={this.cancelSearch}
-                        />
+
+
+
+
+                        {this.state.isAdd ?
+                            <div className="card shadow mb-4">
+                                <div className="card-header py-3">
+                                    <h6 className="m-0 font-weight-bold">Adding Form</h6>
+                                </div>
+
+
+                                <div className="card-body">
+                                    <SaleForm
+                                        submit={this.addSale}
+                                        cancel={this.handleCancel}
+                                    />
+                                </div>
+                            </div>
+                            :
+                            <div className="mb-4">
+                                <button type="submit"
+                                    className="btn btn-primary"
+                                    onClick={this.handleAdd}>
+                                    <i className="fa-solid fa-plus"></i>
+                                    &nbsp;
+                                    add
+                                </button>
+                            </div>
+                        }
+
+                        <div className="card shadow mb-5">
+                            <div className="card-header py-3">
+                                <h6 className="m-0 font-weight-bold">Search Form</h6>
+                            </div>
+                            <div className="card-body">
+                                <SaleForm
+                                    // submit={this.searchSale}
+                                    submit={this.search}
+                                    submitLabel='search'
+                                    cancelSearch={this.cancelSearch}
+                                />
+                            </div>
+                        </div>
+
+
+                        <SaleList
+                            data={this.state.sales}
+                            remove={this.removeSale}
+                            resend={this.resendSale}
+                            update={this.updateSale} />
+
+
+                    </div>
+                    <div className="card-footer">
+                        <div className="d-flex justify-content-center align-items-center">
+                            <FontAwesomeIcon icon={faCopyright} />
+                            &nbsp;
+                            <center>
+                                2023 Tantowi Alif Feryansyah
+                            </center>
+                        </div>
                     </div>
                 </div>
 
-
-                <SaleList
-                    data={this.state.sales}
-                    remove={this.removeSale}
-                    resend={this.resendSale}
-                    update={this.updateSale} />
-
-                <div className="card-footer">
-                </div>
             </div>
         )
     }
