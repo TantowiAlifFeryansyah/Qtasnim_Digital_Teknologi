@@ -18,12 +18,10 @@ export default function SaleList(props) {
                     <SaleItem
                         key={sale.id}
                         no={index + 1}
-                        nama_barang={sale.nama_barang}
-                        stok={sale.stok}
-                        jumlah_terjual={sale.jumlah_terjual}
-                        tanggal_transaksi={sale.tanggal_transaksi}
-                        jenis_barang={sale.jenis_barang} 
-                        remove={()=> props.remove(sale._id)}/>
+                        sale={sale}
+                        remove={()=> props.remove(sale.id)}
+                        resend={()=> props.resend(sale)}
+                        update={props.update}/>
                 ))}
             </tbody>
         </table>

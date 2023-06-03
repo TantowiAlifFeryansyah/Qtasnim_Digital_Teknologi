@@ -42,7 +42,7 @@ export default class SaleBox extends Component {
                 ]
             }
         });
-        fetch("https://localhost:3000/create", {
+        fetch("http://localhost:3000/create", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -84,8 +84,39 @@ export default class SaleBox extends Component {
             })
     }
 
-    removeSale = (_id) => {
-        fetch(`https://localhost:3000/delete/${_id}`, {
+    updateSale = ({_id, nama_barang, stok, jumlah_terjual, tanggal_transaksi, jenis_barang}) => {
+        fetch(`http://localhost:3000/update/${_id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ nama_barang, stok, jumlah_terjual, tanggal_transaksi, jenis_barang }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                this.setState(function (state) {
+                    return {
+                        sales: state.sales.map(item => {
+                            if (item._id === _id) {
+                                return {
+                                    _id: data.data._id,
+                                    nama_barang: data.data.nama_barang,
+                                    stok: data.data.stok,
+                                    jumlah_terjual: data.data.jumlah_terjual,
+                                    tanggal_transaksi: data.data.tanggal_transaksi,
+                                    jenis_barang: data.data.jenis_barang,
+                                    sent: true
+                                }
+                            }
+                            return item
+                        })
+                    }
+                })
+            })
+    }
+
+    removeSale = (id) => {
+        fetch(`http://localhost:3000/delete/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -93,7 +124,7 @@ export default class SaleBox extends Component {
         }).then((response) => response.json()).then((data) => {
             this.setState(function (state, props) {
                 return {
-                    sales: state.sales.filter(item => item._id !== data.data._id)
+                    sales: state.sales.filter(item => item.id !== data.data.id)
                 }
             })
         })
@@ -109,6 +140,40 @@ export default class SaleBox extends Component {
             })
     }
 
+    resendSale = ({_id, nama_barang, stok, jumlah_terjual, tanggal_transaksi, jenis_barang}) => {
+        fetch("http://localhost:3000/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ nama_barang, stok, jumlah_terjual, tanggal_transaksi, jenis_barang }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                this.setState(function (state, props) {
+                    return {
+                        sales: state.sales.map(item => {
+                            if (item._id === _id) {
+                                return {
+                                    _id: data.data._id,
+                                    nama_barang: data.data.nama_barang,
+                                    stok: data.data.stok,
+                                    jumlah_terjual: data.data.jumlah_terjual,
+                                    tanggal_transaksi: data.data.tanggal_transaksi,
+                                    jenis_barang: data.data.jenis_barang,
+                                    sent: true
+                                }
+                            }
+                            return item
+                        })
+                    }
+                })
+            })
+            .catch((error) => {
+                console.log('gagal resend');
+            })
+    }
+
     render() {
         return (
             <div className="container">
@@ -119,7 +184,11 @@ export default class SaleBox extends Component {
                     <div className="card-body">
                         <SaleForm submit={this.addSale} />
                     </div>
-                    <SaleList data={this.state.sales} remove={this.removeSale} />
+                    <SaleList 
+                    data={this.state.sales} 
+                    remove={this.removeSale} 
+                    resend={this.resendSale} 
+                    update={this.updateSale}/>
                     <div className="card-footer">
 
                     </div>
