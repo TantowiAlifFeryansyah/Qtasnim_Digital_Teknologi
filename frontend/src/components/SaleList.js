@@ -6,11 +6,12 @@ export default function SaleList(props) {
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Nama Barang</th>
-                    <th>Stok</th>
-                    <th>Jumlah Terjual</th>
-                    <th>Tanggal Transaksi</th>
-                    <th>Jenis Barang</th>
+                    <th>Item Name</th>
+                    <th>Stock</th>
+                    <th>Quantity Sold</th>
+                    <th>Transaction Date</th>
+                    <th>Item Type</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>

@@ -1,4 +1,10 @@
-import { Component } from "react"
+import React, { Component, Fragment } from "react"
+import { format } from 'date-fns';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrashCan, faPen } from '@fortawesome/free-solid-svg-icons'
+
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 export default class SaleItem extends Component {
     constructor(props) {
@@ -12,6 +18,8 @@ export default class SaleItem extends Component {
             isEdit: false
         }
     }
+
+
 
     handleInputChange = (event) => {
         const target = event.target;
@@ -35,113 +43,153 @@ export default class SaleItem extends Component {
     }
 
     saveEdit = () => {
-        this.props.update({ _id: this.props.sale._id, nama_barang: this.state.nama_barang, stok: this.state.stok, jumlah_terjual: this.state.jumlah_terjual, tanggal_transaksi: this.state.tanggal_transaksi, jenis_barang: this.state.jenis_barang })
+        this.props.update({ id: this.props.sale.id, nama_barang: this.state.nama_barang, stok: this.state.stok, jumlah_terjual: this.state.jumlah_terjual, tanggal_transaksi: this.state.tanggal_transaksi, jenis_barang: this.state.jenis_barang })
         this.setState({
             isEdit: false
         });
     }
 
+    handleModalShowHide() {
+        this.setState({
+            showHide: true
+        })
+    }
+
+    cancelHandleModalShowHide() {
+        this.setState({
+            showHide: false
+        })
+    }
+
     render() {
         return (
-            <tr>
-                <td>{this.props.no}</td>
-                <td>
-                    {this.state.isEdit ?
-                        <input
-                            className="form-control"
-                            type="teks"
-                            name="nama_barang"
-                            value={this.state.nama_barang}
-                            placeholder="Nama Barang"
-                            onChange={this.handleInputChange}
-                        />
-                        :
-                        this.state.nama_barang
-                    }
-                </td>
-
-                <td>
-                    {this.state.isEdit ?
-                        <input
-                            className="form-control"
-                            type="teks"
-                            name="stok"
-                            value={this.state.stok}
-                            placeholder="Stok Awal"
-                            onChange={this.handleInputChange}
-                        />
-                        :
-                        this.state.stok
-                    }
-                </td>
-
-                <td>
-                    {this.state.isEdit ?
-                        <input
-                            className="form-control"
-                            type="teks"
-                            name="jumlah_terjual"
-                            value={this.state.jumlah_terjual}
-                            placeholder="Stok Keluar"
-                            onChange={this.handleInputChange}
-                        />
-                        :
-                        this.state.jumlah_terjual
-                    }
-                </td>
-
-                <td>
-                    {this.state.isEdit ?
-                        <input
-                            className="form-control"
-                            type="date"
-                            name="tanggal_transaksi"
-                            value={this.state.tanggal_transaksi}
-                            placeholder="Tanggal Transaksi"
-                            onChange={this.handleInputChange}
-                        />
-                        :
-                        this.state.tanggal_transaksi
-                    }
-                </td>
-
-                <td>
-                    {this.state.isEdit ?
-                        <input
-                            className="form-control"
-                            type="teks"
-                            name="jenis_barang"
-                            value={this.state.jenis_barang}
-                            placeholder="Jenis Barang"
-                            onChange={this.handleInputChange}
-                        />
-                        :
-                        this.state.jenis_barang
-                    }
-                </td>
-
-
-                {this.props.sale.sent ?
-                    this.state.isEdit ?
-                        <td>
-                            <button type="button" className="btn btn-info" onClick={this.saveEdit}>Simpan</button>
-                            <button type="button" className="btn btn-warning" onClick={this.handleCancel}>Kembali</button>
-                        </td>
-
-                        :
-
-                        <td>
-                            <button type="button" className="btn btn-success" onClick={this.handleEdit}>Edit</button>
-                            <button type="button" className="btn btn-danger" onClick={this.props.remove}>Hapus</button>
-                        </td>
-                    :
+            <Fragment>
+                <tr>
+                    <td>{this.props.no}</td>
                     <td>
-
-                        <button type="button" className="btn btn-warning" onClick={this.props.remove}>Resend</button>
+                        {this.state.isEdit ?
+                            <input
+                                type="teks"
+                                name="nama_barang"
+                                value={this.state.nama_barang}
+                                placeholder="Nama Barang"
+                                onChange={this.handleInputChange}
+                                className="form-control"
+                            />
+                            :
+                            this.state.nama_barang
+                        }
                     </td>
 
-                }
-            </tr>
+                    <td>
+                        {this.state.isEdit ?
+                            <input
+                                type="teks"
+                                name="stok"
+                                value={this.state.stok}
+                                placeholder="Stok Awal"
+                                onChange={this.handleInputChange}
+                                className="form-control"
+                            />
+                            :
+                            this.state.stok
+                        }
+                    </td>
+
+                    <td>
+                        {this.state.isEdit ?
+                            <input
+                                type="teks"
+                                name="jumlah_terjual"
+                                value={this.state.jumlah_terjual}
+                                placeholder="Stok Keluar"
+                                onChange={this.handleInputChange}
+                                className="form-control"
+                            />
+                            :
+                            this.state.jumlah_terjual
+                        }
+                    </td>
+
+                    <td>
+                        {this.state.isEdit ?
+                            <input
+                                type="date"
+                                name="tanggal_transaksi"
+                                value={this.state.tanggal_transaksi}
+                                placeholder="Tanggal Transaksi"
+                                onChange={this.handleInputChange}
+                                className="form-control"
+                            />
+                            :
+                            format(new Date(this.state.tanggal_transaksi), 'MM/dd/yyyy')
+                            
+                        }
+                    </td>
+
+                    <td>
+                        {this.state.isEdit ?
+                            <input
+                                type="teks"
+                                name="jenis_barang"
+                                value={this.state.jenis_barang}
+                                placeholder="Jenis Barang"
+                                onChange={this.handleInputChange}
+                                className="form-control"
+                            />
+                            :
+                            this.state.jenis_barang
+                        }
+                    </td>
+
+
+                    {this.props.sale.sent ?
+                        this.state.isEdit ?
+                            <td>
+                                <button type="button"
+                                    className="btn btn-primary"
+                                    onClick={this.saveEdit}>
+                                    save
+                                </button>
+                                &nbsp;
+                                <button type="button"
+                                    className="btn btn-warning"
+                                    onClick={this.handleCancel}>
+                                    cancel
+                                </button>
+                            </td>
+
+                            :
+
+                            <td>
+                                <button type="button" className="btn btn-success" onClick={this.handleEdit}>edit</button>
+                                &nbsp;
+                                <button type="button" className="btn btn-danger" onClick={() => this.handleModalShowHide()}>delete</button>
+                            </td>
+                        :
+                        <td>
+                            <button type="button" className="btn btn-warning" onClick={this.props.resend} style={{ color: "white" }}>resend</button>
+                        </td>
+
+                    }
+                </tr>
+
+                <Modal show={this.state.showHide}>
+                    <Modal.Header >
+                        <Modal.Title>Deleted Confirmation</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Are you sure, you want delete it</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => this.cancelHandleModalShowHide()}>
+                            No
+                        </Button>
+                        <Button variant="primary" onClick={this.props.remove}>
+                            Yes
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+            </Fragment>
         )
     }
 }

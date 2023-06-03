@@ -25,13 +25,13 @@ export default class SaleBox extends Component {
     }
 
     addSale = ({ nama_barang, stok, jumlah_terjual, tanggal_transaksi, jenis_barang }) => {
-        const _id = Date.now()
+        const id = Date.now()
         this.setState(function (state, props) {
             return {
                 sales: [
                     ...state.sales,
                     {
-                        _id,
+                        id,
                         nama_barang,
                         stok,
                         jumlah_terjual,
@@ -54,9 +54,9 @@ export default class SaleBox extends Component {
                 this.setState(function (state, props) {
                     return {
                         sales: state.sales.map(item => {
-                            if (item._id === _id) {
+                            if (item.id === id) {
                                 return {
-                                    _id: data.data._id,
+                                    id: data.data.id,
                                     nama_barang: data.data.nama_barang,
                                     stok: data.data.stok,
                                     jumlah_terjual: data.data.jumlah_terjual,
@@ -74,7 +74,7 @@ export default class SaleBox extends Component {
                 this.setState(function (state, props) {
                     return {
                         sales: state.sales.map(item => {
-                            if (item._id === _id) {
+                            if (item.id === id) {
                                 return { ...item, sent: false }
                             }
                             return item
@@ -84,8 +84,8 @@ export default class SaleBox extends Component {
             })
     }
 
-    updateSale = ({_id, nama_barang, stok, jumlah_terjual, tanggal_transaksi, jenis_barang}) => {
-        fetch(`http://localhost:3000/update/${_id}`, {
+    updateSale = ({ id, nama_barang, stok, jumlah_terjual, tanggal_transaksi, jenis_barang }) => {
+        fetch(`http://localhost:3000/update/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -97,9 +97,9 @@ export default class SaleBox extends Component {
                 this.setState(function (state) {
                     return {
                         sales: state.sales.map(item => {
-                            if (item._id === _id) {
+                            if (item.id === id) {
                                 return {
-                                    _id: data.data._id,
+                                    id: data.data.id,
                                     nama_barang: data.data.nama_barang,
                                     stok: data.data.stok,
                                     jumlah_terjual: data.data.jumlah_terjual,
@@ -124,23 +124,26 @@ export default class SaleBox extends Component {
         }).then((response) => response.json()).then((data) => {
             this.setState(function (state, props) {
                 return {
-                    sales: state.sales.filter(item => item.id !== data.data.id)
+                    sales: state.sales.filter(item => item.id !== id)
                 }
             })
         })
     }
 
-    searchSale = (query = {}) => {
-        fetch(`http://localhost:3000?${new URLSearchParams({ query })}`)
-            .then((response) => response.json())
-            .then((data) => {
-                this.setState({
-                    sales: data?.data
-                })
-            })
-    }
+    // searchSale = (query = {}) => {
+    //     fetch(`http://localhost:3000?${new URLSearchParams({ query })}`)
+    //         .then((response) => response.json())
+    //         .then((data) => {
+    //             this.setState({
+    //                 sales: data?.data.map(item => {
+    //                     item.sent = true
+    //                     return item
+    //                 })
+    //             })
+    //         })
+    // }
 
-    resendSale = ({_id, nama_barang, stok, jumlah_terjual, tanggal_transaksi, jenis_barang}) => {
+    resendSale = ({ id, nama_barang, stok, jumlah_terjual, tanggal_transaksi, jenis_barang }) => {
         fetch("http://localhost:3000/create", {
             method: "POST",
             headers: {
@@ -153,9 +156,9 @@ export default class SaleBox extends Component {
                 this.setState(function (state, props) {
                     return {
                         sales: state.sales.map(item => {
-                            if (item._id === _id) {
+                            if (item.id === id) {
                                 return {
-                                    _id: data.data._id,
+                                    id: data.data.id,
                                     nama_barang: data.data.nama_barang,
                                     stok: data.data.stok,
                                     jumlah_terjual: data.data.jumlah_terjual,
@@ -174,24 +177,92 @@ export default class SaleBox extends Component {
             })
     }
 
+    handleAdd = () => {
+        this.setState({
+            isAdd: true
+        });
+    }
+
+    handleCancel = () => {
+        this.setState({
+            isAdd: false
+        });
+    }
+
+    cancelSearch = () => {
+        this.params = {
+            nama_barang: '',
+            stok: '',
+            jumlah_terjual: '',
+            tanggal_transaksi: '',
+            jenis_barang: '',
+        }
+        this.componentDidMount()
+    }
+
+    search = (query = {}) => {
+        this.params = { ...this.params, ...query, page: 1 }
+        this.componentDidMount()
+    }
+
     render() {
         return (
-            <div className="container">
-                <div className="card">
-                    <div className="card-header">
-                        <h1>Sales</h1>
+            <div className="container-xxl mt-4">
+                <div className="card shadow mb-4">
+                    <div className="card-header pt-4 pb-3">
+                        <center>
+                            <h1>Penjualan</h1>
+                        </center>
+                    </div>
+                </div>
+
+                {this.state.isAdd ?
+                    <div className="card shadow mb-4">
+                        <div className="card-header py-3">
+                            <h6 className="m-0 font-weight-bold">Adding Form</h6>
+                        </div>
+
+                        <div className="card-body">
+                            <SaleForm
+                                submit={this.addSale}
+                                cancel={this.handleCancel}
+                            />
+                        </div>
+                    </div>
+                    :
+                    <div className="mb-4">
+                        <button type="submit"
+                            className="btn btn-primary"
+                            onClick={this.handleAdd}>
+                            <i className="fa-solid fa-plus"></i>
+                            &nbsp;
+                            add
+                        </button>
+                    </div>
+                }
+
+                <div className="card shadow mb-5">
+                    <div className="card-header py-3">
+                        <h6 className="m-0 font-weight-bold">Search Form</h6>
                     </div>
                     <div className="card-body">
-                        <SaleForm submit={this.addSale} />
+                        <SaleForm
+                            // submit={this.searchSale}
+                            submit={this.search}
+                            submitLabel='search' 
+                            cancelSearch={this.cancelSearch}
+                        />
                     </div>
-                    <SaleList 
-                    data={this.state.sales} 
-                    remove={this.removeSale} 
-                    resend={this.resendSale} 
-                    update={this.updateSale}/>
-                    <div className="card-footer">
+                </div>
 
-                    </div>
+
+                <SaleList
+                    data={this.state.sales}
+                    remove={this.removeSale}
+                    resend={this.resendSale}
+                    update={this.updateSale} />
+
+                <div className="card-footer">
                 </div>
             </div>
         )
