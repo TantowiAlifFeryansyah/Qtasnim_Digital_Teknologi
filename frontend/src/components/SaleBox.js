@@ -136,9 +136,8 @@ export default class SaleBox extends Component {
     }
 
     searchSale = (query = {}) => {
-        console.log('isi query', query);
         const { nama_barang } = query
-        fetch(`http://localhost:3000?nama_barang=${nama_barang}&`)
+        fetch(`http://localhost:3000?nama_barang=${nama_barang}`)
             .then((response) => response.json())
             .then((data) => {
                 this.setState({
@@ -196,7 +195,7 @@ export default class SaleBox extends Component {
         });
     }
 
-    cancelSearch = () => {
+    resetSale = () => {
         this.params = {
             nama_barang: '',
             stok: '',
@@ -205,6 +204,41 @@ export default class SaleBox extends Component {
             jenis_barang: '',
         }
         this.componentDidMount()
+    }
+
+    filterSale = (value, startDate, endDate) => {
+        console.log('isi state', value);
+        let temp;
+        if (value === 'z_a') {
+            temp = 'z_a=true'
+        } else if (value === 'a_z') {
+            temp = 'a_z=true'
+        } else if (value === 'tanggal_transaksi_terlama') {
+            temp = 'tanggal_transaksi_terlama=true'
+        } else if (value === 'tanggal_transaksi_terkini') {
+            temp = 'tanggal_transaksi_terkini=true'
+        }
+        else if (value === 'jumlah_terjual_terbanyak') {
+            if (startDate && endDate) {
+                temp = `jumlah_terjual_terbanyak=true&startDate=${startDate}&endDate=${endDate}`
+            } else if (startDate) {
+                temp = `jumlah_terjual_terbanyak=true&startDate=${startDate}`
+            } else if (endDate) {
+                temp = `jumlah_terjual_terbanyak=true&endDate=${endDate}`
+            } else {
+                temp = `jumlah_terjual_terbanyak=true`
+            }
+        }
+        fetch(`http://localhost:3000?${temp}`)
+            .then((response) => response.json())
+            .then((data) => {
+                this.setState({
+                    sales: data?.data.map(item => {
+                        item.sent = true
+                        return item
+                    })
+                })
+            })
     }
 
     render() {
@@ -252,7 +286,7 @@ export default class SaleBox extends Component {
                                 <SaleForm
                                     submit={this.searchSale}
                                     submitLabel='search'
-                                    cancelSearch={this.cancelSearch}
+                                    resetSale={this.resetSale}
                                 />
                             </div>
                         </div>
@@ -260,14 +294,18 @@ export default class SaleBox extends Component {
                         <div className="mb-3"
                             style={{
                                 display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center'
+                                // justifyContent: 'space-between',
+                                alignItems: 'baseline'
                             }}>
                             <div>
-                                <FilterSale />
+                                <FilterSale
+                                    filterData={this.filterSale} />
                             </div>
                             <div>
-                                <DateSale />
+                                <DateSale
+                                    filterData={this.filterSale}
+                                    resetSale={this.resetSale}
+                                />
                             </div>
                         </div>
 

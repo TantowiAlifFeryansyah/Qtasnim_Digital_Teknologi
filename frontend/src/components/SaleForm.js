@@ -40,7 +40,7 @@ export default class SaleForm extends Component {
 
     handleSearchCancel = (event) => {
         event.preventDefault()
-        this.props.cancelSearch()
+        this.props.resetSale()
         this.setState({ nama_barang: '' })
     }
 
@@ -48,7 +48,7 @@ export default class SaleForm extends Component {
         return (
             <form onSubmit={this.props.submitLabel ? this.handleSearch : this.handleSubmit}>
                 <div className="row g-1 align-items-center">
-                    <div class="row mb-3">
+                    <div className="row mb-3">
                         <label htmlFor="nama_barang" className="col-sm-2 col-form-label">
                             <strong>Item Name</strong>
                         </label>
@@ -60,7 +60,7 @@ export default class SaleForm extends Component {
                     </div>
 
                     {this.props.submitLabel !== 'search' &&
-                        <div class="row mb-3">
+                        <div className="row mb-3">
                             <label htmlFor="stok" className="col-sm-2 col-form-label">
                                 <strong>Stock</strong>
                             </label>
@@ -74,7 +74,7 @@ export default class SaleForm extends Component {
 
                     {this.props.submitLabel !== 'search' &&
 
-                        <div class="row mb-3">
+                        <div className="row mb-3">
                             <label htmlFor="jumlah_terjual" className="col-sm-2 col-form-label">
                                 <strong>Quantity Sold</strong>
                             </label>
@@ -87,7 +87,7 @@ export default class SaleForm extends Component {
                     }
 
                     {this.props.submitLabel !== 'search' &&
-                        <div class="row mb-3">
+                        <div className="row mb-3">
                             <label htmlFor="tanggal_transaksi" className="col-sm-2 col-form-label">
                                 <strong>Transaction Date</strong>
                             </label>
@@ -100,7 +100,7 @@ export default class SaleForm extends Component {
                     }
 
                     {this.props.submitLabel !== 'search' &&
-                        <div class="row mb-3">
+                        <div className="row mb-3">
                             <label htmlFor="jenis_barang" className="col-sm-2 col-form-label">
                                 <strong>Item Type</strong>
                             </label>
