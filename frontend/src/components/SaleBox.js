@@ -4,6 +4,8 @@ import SaleList from "./SaleList";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopyright } from '@fortawesome/free-solid-svg-icons';
+import FilterSale from "./FilterSale";
+import DateSale from "./DateSale";
 
 export default class SaleBox extends Component {
 
@@ -133,18 +135,20 @@ export default class SaleBox extends Component {
         })
     }
 
-    // searchSale = (query = {}) => {
-    //     fetch(`http://localhost:3000?${new URLSearchParams({ query })}`)
-    //         .then((response) => response.json())
-    //         .then((data) => {
-    //             this.setState({
-    //                 sales: data?.data.map(item => {
-    //                     item.sent = true
-    //                     return item
-    //                 })
-    //             })
-    //         })
-    // }
+    searchSale = (query = {}) => {
+        console.log('isi query', query);
+        const { nama_barang } = query
+        fetch(`http://localhost:3000?nama_barang=${nama_barang}&`)
+            .then((response) => response.json())
+            .then((data) => {
+                this.setState({
+                    sales: data?.data.map(item => {
+                        item.sent = true
+                        return item
+                    })
+                })
+            })
+    }
 
     resendSale = ({ id, nama_barang, stok, jumlah_terjual, tanggal_transaksi, jenis_barang }) => {
         fetch("http://localhost:3000/create", {
@@ -203,11 +207,6 @@ export default class SaleBox extends Component {
         this.componentDidMount()
     }
 
-    search = (query = {}) => {
-        this.params = { ...this.params, ...query, page: 1 }
-        this.componentDidMount()
-    }
-
     render() {
         return (
             <div className="container-xxl mt-4">
@@ -218,9 +217,6 @@ export default class SaleBox extends Component {
                         </center>
                     </div>
                     <div className="card-body">
-
-
-
 
                         {this.state.isAdd ?
                             <div className="card shadow mb-4">
@@ -254,21 +250,32 @@ export default class SaleBox extends Component {
                             </div>
                             <div className="card-body">
                                 <SaleForm
-                                    // submit={this.searchSale}
-                                    submit={this.search}
+                                    submit={this.searchSale}
                                     submitLabel='search'
                                     cancelSearch={this.cancelSearch}
                                 />
                             </div>
                         </div>
 
+                        <div className="mb-3"
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center'
+                            }}>
+                            <div>
+                                <FilterSale />
+                            </div>
+                            <div>
+                                <DateSale />
+                            </div>
+                        </div>
 
                         <SaleList
                             data={this.state.sales}
                             remove={this.removeSale}
                             resend={this.resendSale}
                             update={this.updateSale} />
-
 
                     </div>
                     <div className="card-footer">
@@ -284,5 +291,6 @@ export default class SaleBox extends Component {
 
             </div>
         )
+
     }
 }
