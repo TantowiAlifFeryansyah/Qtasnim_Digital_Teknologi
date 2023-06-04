@@ -10,21 +10,36 @@ import DateSale from "./DateSale";
 export default class SaleBox extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             sales: []
         }
     }
 
     componentDidMount() {
-        fetch("http://localhost:3000")
+        this.fetchSaleData()
+    }
+
+    componentDidUpdate() {
+        if (this.state.page !== this.state.temp) {
+            this.fetchSaleData()
+            this.setState({
+                temp: this.state.page
+            })
+        }
+    }
+
+    fetchSaleData = () => {
+        fetch(`http://localhost:3000?currentPage=${this.state.page}&show=10`)
             .then((response) => response.json())
             .then((data) => {
                 this.setState({
                     sales: data?.data.map(item => {
                         item.sent = true
                         return item
-                    })
+                    }),
+                    total: data?.total,
+                    offset: data?.offset,
                 })
             })
     }
@@ -206,8 +221,19 @@ export default class SaleBox extends Component {
         this.componentDidMount()
     }
 
+    handlePage = () => {
+        let temp = Math.ceil(this.state.total / 10);
+        let array3 = [];
+
+        if (+temp > 0) {
+            for (let i = 1; i <= temp; i++) {
+                array3.push(i);
+            }
+        }
+        return array3
+    }
+
     filterSale = (value, startDate, endDate) => {
-        console.log('isi state', value);
         let temp;
         if (value === 'z_a') {
             temp = 'z_a=true'
@@ -250,72 +276,87 @@ export default class SaleBox extends Component {
                             <h1>Sales</h1>
                         </center>
                     </div>
-                    <div className="card-body">
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                        <div className="card-body">
+                            {this.state.isAdd ?
+                                <div className="card shadow mb-4">
+                                    <div className="card-header py-3">
+                                        <h6 className="m-0 font-weight-bold">Adding Form</h6>
+                                    </div>
 
-                        {this.state.isAdd ?
-                            <div className="card shadow mb-4">
-                                <div className="card-header py-3">
-                                    <h6 className="m-0 font-weight-bold">Adding Form</h6>
+
+                                    <div className="card-body">
+                                        <SaleForm
+                                            submit={this.addSale}
+                                            cancel={this.handleCancel}
+                                        />
+                                    </div>
                                 </div>
+                                :
+                                <div className="mb-4">
+                                    <button type="submit"
+                                        className="btn btn-primary"
+                                        onClick={this.handleAdd}>
+                                        <i className="fa-solid fa-plus"></i>
+                                        &nbsp;
+                                        add
+                                    </button>
+                                </div>
+                            }
 
-
+                            <div className="card shadow mb-5">
+                                <div className="card-header py-3">
+                                    <h6 className="m-0 font-weight-bold">Search Form</h6>
+                                </div>
                                 <div className="card-body">
                                     <SaleForm
-                                        submit={this.addSale}
-                                        cancel={this.handleCancel}
+                                        submit={this.searchSale}
+                                        submitLabel='search'
+                                        resetSale={this.resetSale}
                                     />
                                 </div>
                             </div>
-                            :
-                            <div className="mb-4">
-                                <button type="submit"
-                                    className="btn btn-primary"
-                                    onClick={this.handleAdd}>
-                                    <i className="fa-solid fa-plus"></i>
-                                    &nbsp;
-                                    add
-                                </button>
-                            </div>
-                        }
 
-                        <div className="card shadow mb-5">
-                            <div className="card-header py-3">
-                                <h6 className="m-0 font-weight-bold">Search Form</h6>
+                            <div className="mb-3"
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'baseline'
+                                }}>
+                                <div>
+                                    <FilterSale
+                                        filterData={this.filterSale} />
+                                </div>
+                                <div>
+                                    <DateSale
+                                        filterData={this.filterSale}
+                                        resetSale={this.resetSale}
+                                    />
+                                </div>
                             </div>
-                            <div className="card-body">
-                                <SaleForm
-                                    submit={this.searchSale}
-                                    submitLabel='search'
-                                    resetSale={this.resetSale}
-                                />
-                            </div>
+
+                            <SaleList
+                                data={this.state.sales}
+                                remove={this.removeSale}
+                                resend={this.resendSale}
+                                update={this.updateSale} />
                         </div>
 
-                        <div className="mb-3"
-                            style={{
-                                display: 'flex',
-                                // justifyContent: 'space-between',
-                                alignItems: 'baseline'
-                            }}>
-                            <div>
-                                <FilterSale
-                                    filterData={this.filterSale} />
-                            </div>
-                            <div>
-                                <DateSale
-                                    filterData={this.filterSale}
-                                    resetSale={this.resetSale}
-                                />
-                            </div>
+                        <div>
+                            <nav aria-label="Page navigation example">
+                                <ul className="pagination">
+                                    {
+                                        this.handlePage().map((val) => (
+                                            <li
+                                                key={val}
+                                                className={`page-item ${this.state.page === val ? 'active' : ''}`} style={{ cursor: "pointer" }}><a className="page-link" onClick={() => this.setState({ page: val })}>{val} </a></li>
+                                        )
+                                        )
+                                    }
+                                </ul>
+                            </nav>
                         </div>
-
-                        <SaleList
-                            data={this.state.sales}
-                            remove={this.removeSale}
-                            resend={this.resendSale}
-                            update={this.updateSale} />
-
                     </div>
+
                     <div className="card-footer">
                         <div className="d-flex justify-content-center align-items-center">
                             <FontAwesomeIcon icon={faCopyright} />

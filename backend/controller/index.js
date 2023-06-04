@@ -4,11 +4,9 @@ const { Op } = require('sequelize');
 class Controller {
     static async getSales(req, res, next) {
         try {
-            const { nama_barang, a_z, z_a, tanggal_transaksi_terkini, tanggal_transaksi_terlama, jumlah_terjual_terbanyak, startDate, endDate } = req.query;
-            // const startDate = req.query.start;
-            // const endDate = req.query.end;
-            const page = parseInt(req.query.page) || 1;
-            const limit = 10;
+            const { nama_barang, a_z, z_a, tanggal_transaksi_terkini, tanggal_transaksi_terlama, jumlah_terjual_terbanyak, startDate, endDate, show, currentPage } = req.query;
+            const page = +currentPage || 1;
+            const limit = show || 10;
             const offset = (page - 1) * limit;
             const total = await Sales.count();
             const pages = Math.ceil(total / limit);
@@ -22,9 +20,9 @@ class Controller {
             } else if (z_a) {
                 option = { ...option, order: [['nama_barang', 'DESC']] }
             } else if (tanggal_transaksi_terkini) {
-                option = { ...option, order: [['tanggal_transaksi', 'ASC']] }
-            } else if (tanggal_transaksi_terlama) {
                 option = { ...option, order: [['tanggal_transaksi', 'DESC']] }
+            } else if (tanggal_transaksi_terlama) {
+                option = { ...option, order: [['tanggal_transaksi', 'ASC']] }
             } else if (jumlah_terjual_terbanyak) {
                 if (startDate && endDate) {
                     option = { ...option, where: { tanggal_transaksi: { [Op.between]: [startDate, endDate] } }, order: [['jumlah_terjual', 'DESC']] }
@@ -37,9 +35,8 @@ class Controller {
                     option = { ...option, order: [['jumlah_terjual', 'DESC']] }
                 }
             }
-
             const data = await Sales.findAll(option)
-            res.status(200).json({ message: 'Permintaan sukses dan data berhasil ditemukan', data, pages: pages, offset })
+            res.status(200).json({ message: 'Permintaan sukses dan data berhasil ditemukan', data, pages: pages, total })
 
         } catch (error) {
             res.status(404).json({ message: 'Data yang diminta tidak ditemukan' });
@@ -48,6 +45,7 @@ class Controller {
 
     static async create(req, res, next) {
         try {
+            console.log('ini body', req.body);
             const { nama_barang, stok, jumlah_terjual, tanggal_transaksi, jenis_barang } = req.body
             const data = await Sales.create({ nama_barang, stok, jumlah_terjual, tanggal_transaksi, jenis_barang });
             res.status(201).json({ message: 'Data berhasil dibuat', data })

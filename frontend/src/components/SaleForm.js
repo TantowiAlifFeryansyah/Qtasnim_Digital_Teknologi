@@ -4,11 +4,11 @@ export default class SaleForm extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            nama_barang: null,
-            stok: null,
-            jumlah_terjual: null,
-            tanggal_transaksi: null,
-            jenis_barang: null,
+            nama_barang: '',
+            stok: '',
+            jumlah_terjual: '',
+            tanggal_transaksi: '',
+            jenis_barang: '',
         }
     }
 

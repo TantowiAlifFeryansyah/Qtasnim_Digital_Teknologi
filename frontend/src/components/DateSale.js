@@ -2,7 +2,7 @@ import { Component } from "react";
 
 export default class DateSale extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.jalanKan = this.jalanKan.bind(this);
         this.state = {
             filter: "",
@@ -33,12 +33,6 @@ export default class DateSale extends Component {
     jalanKan() {
         this.props.filterData(this.state.filter, this.state.startDate, this.state.endDate)
     }
-
-    // handleReset = (event) => {
-    //     console.log('ini masuk');
-    //     event.preventDefault()
-    //      this.props.resetSale()
-    // }
 
     handleReset = (event) => {
         event.preventDefault();
